@@ -178,7 +178,7 @@ def handle_ping(message):
             f"⚙️ *Tipo:* {attack_type}\n"
             f"🧟‍♀️ *Threads:* {threads}\n"
             f"⏳ *Tiempo (ms):* {duration}\n\n"
-            f"*💠 KrizzZModz 🇵🇪 USERS VIP 💠"
+            f"💠 KrizzZModz 🇵🇪 USERS VIP 💠"
         ),
         reply_markup=markup,
         parse_mode="Markdown",
